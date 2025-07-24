@@ -1,11 +1,11 @@
+print("ui starting...")
+
 import tkinter as tk
 import zmq
 import json
 import datetime
 
-bg_color = (255, 255, 255)
-font_color = (0, 0, 0)
-menu_font = 'assets/iPodSans.ttf'
+# global vars
 
 
 def update_last_saved():
@@ -21,11 +21,21 @@ def load_set():
 
 def add_card(column_frame):
     print("add new card")
-    card = tk.Label(column_frame, text="New Card", relief="raised", padx=5, pady=5, bg="white")
-    card.pack(pady=5, fill='x')
+    
+    card_frame = tk.Frame(column_frame, relief="raised", bg="white", bd=1)
+    card_frame.pack(pady=5, fill='x', padx=2)
+
+    card_label = tk.Label(card_frame, text="New Card", bg="white", anchor="w")
+    card_label.pack(side="left", fill="x", expand=True, padx=5, pady=5)
+
+    edit_button = tk.Button(card_frame, text="Edit", padx=5, pady=2)
+    edit_button.pack(side="right", padx=5, pady=5)
 
 def edit_card():
     print("edit card")
+
+def move_card():
+    print("move card")
 
 def remove_card():
     print("remove card")
@@ -43,11 +53,11 @@ top_frame.pack(side="top", fill="x", padx=10, pady=5)
 title_frame = tk.Frame(top_frame)
 title_frame.pack(side="left", anchor="nw")
 
-title_entry = tk.Entry(title_frame, font=(menu_font, 14), width=30)
+title_entry = tk.Entry(title_frame, font=("Arial", 14), width=30)
 title_entry.insert(0, "Board Name")
 title_entry.pack(anchor="w")
 
-last_saved_label = tk.Label(title_frame, text="Last saved: Never", font=(menu_font, 10))
+last_saved_label = tk.Label(title_frame, text="Last saved: Never", font=("Arial", 10))
 last_saved_label.pack(anchor="w")
 
 # top right
@@ -72,7 +82,7 @@ for title in column_titles:
     col = tk.Frame(columns_frame, bd=2, relief="groove", padx=10, pady=10)
     col.pack(side="left", fill="both", expand=True, padx=5)
 
-    label = tk.Label(col, text=title, font=(menu_font, 12, "bold"))
+    label = tk.Label(col, text=title, font=("Arial", 12, "bold"))
     label.pack()
 
     content_frame = tk.Frame(col)
