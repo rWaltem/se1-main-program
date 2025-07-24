@@ -5,7 +5,6 @@ import os
 
 # List of microservices to launch in the background
 microservices = [
-    "ui.py",
     "add_card.py",
     "edit_card.py",
     "move_card.py",
@@ -26,7 +25,7 @@ try:
 
     # Start UI in the foreground (blocking)
     print("Launching UI...")
-    os.system(f"{sys.executable} ui.py")
+    subprocess.call([sys.executable, "ui.py"])
 
 except KeyboardInterrupt:
     print("\nInterrupted. Cleaning up...")

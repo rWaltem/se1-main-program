@@ -1,35 +1,56 @@
 print("ui starting...")
 
-import tkinter as tk
+from tkinter import *
+import os
 import zmq
 import json
-import datetime
+
 
 # global vars
+not_started_cards = {}
+in_progress_cards = {}
+completed_cards = {}
+running = True
 
+def show_menu():
+    print("\n") # formatting
+    print("Change set name  [C]")
+    print("Save set         [S]")
+    print("Load set         [L]")
+    print("--------------------")
+    print("View Not Started [VN]")
+    print("View In Progress [VP]")
+    print("View Completed   [VC]")
+    print("--------------------")
+    print("Add card         [AC]")
+    print("Edit card        [EC]")
+    print("Move card        [MC]")
+    print("Delete card      [DC]")
+    print("--------------------")
+    print("Clear screen     [CLEAR]")
+    print("Help             [HELP]")
+    print("Quit             [Q]")
 
-def update_last_saved():
-    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    last_saved_label.config(text=f"Last saved: {now}")
+def change_name():
+    print("change name")
 
 def save_set():
-    # save to file if file is not already made
-    update_last_saved()
+    print("save set")
 
 def load_set():
     print("load pressed")
 
-def add_card(column_frame):
-    print("add new card")
-    
-    card_frame = tk.Frame(column_frame, relief="raised", bg="white", bd=1)
-    card_frame.pack(pady=5, fill='x', padx=2)
+def view_not_started():
+    print("view not started")
 
-    card_label = tk.Label(card_frame, text="New Card", bg="white", anchor="w")
-    card_label.pack(side="left", fill="x", expand=True, padx=5, pady=5)
+def view_in_progress():
+    print("in progress")
 
-    edit_button = tk.Button(card_frame, text="Edit", padx=5, pady=2)
-    edit_button.pack(side="right", padx=5, pady=5)
+def view_completed():
+    print("completed")
+
+def add_card():
+    print("add card")
 
 def edit_card():
     print("edit card")
@@ -37,60 +58,21 @@ def edit_card():
 def move_card():
     print("move card")
 
-def remove_card():
-    print("remove card")
+def delete_card():
+    print("delete card")
 
-# GUI
-root = tk.Tk()
-root.title("Task Board")
-root.geometry("800x600")
+def help_menu():
+    print("help menu")
 
-# top
-top_frame = tk.Frame(root)
-top_frame.pack(side="top", fill="x", padx=10, pady=5)
 
-# top left
-title_frame = tk.Frame(top_frame)
-title_frame.pack(side="left", anchor="nw")
+# main loop
+def main():
+    while running == True:
+        # UI menu options:
+        show_menu()
+        user_input = input("=: ")
+    
+    print("Shutting down UI...")
 
-title_entry = tk.Entry(title_frame, font=("Arial", 14), width=30)
-title_entry.insert(0, "Board Name")
-title_entry.pack(anchor="w")
-
-last_saved_label = tk.Label(title_frame, text="Last saved: Never", font=("Arial", 10))
-last_saved_label.pack(anchor="w")
-
-# top right
-button_frame = tk.Frame(top_frame)
-button_frame.pack(side="right", anchor="ne")
-
-save_button = tk.Button(button_frame, text="Save", command=save_set)
-save_button.pack(side="left", padx=5)
-
-load_button = tk.Button(button_frame, text="Load", command=load_set)
-load_button.pack(side="left", padx=5)
-
-# columns
-columns_frame = tk.Frame(root)
-columns_frame.pack(fill="both", expand=True, padx=10, pady=10)
-
-column_titles = ["Not Started", "In Progress", "Completed"]
-column_frames = []
-
-# cards
-for title in column_titles:
-    col = tk.Frame(columns_frame, bd=2, relief="groove", padx=10, pady=10)
-    col.pack(side="left", fill="both", expand=True, padx=5)
-
-    label = tk.Label(col, text=title, font=("Arial", 12, "bold"))
-    label.pack()
-
-    content_frame = tk.Frame(col)
-    content_frame.pack(fill="both", expand=True)
-
-    add_btn = tk.Button(col, text="+", command=lambda f=content_frame: add_card(f))
-    add_btn.pack(pady=5, fill='x')
-
-    column_frames.append(content_frame)
-
-root.mainloop()
+if __name__ == "__main__":
+    main()
