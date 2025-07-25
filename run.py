@@ -9,7 +9,7 @@ microservices = [
     "edit_card.py",
     "move_card.py",
     "load_set.py",
-    "remove_card.py",
+    "delete_card.py",
     "save_set.py"
 ]
 
