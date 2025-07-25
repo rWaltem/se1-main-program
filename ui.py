@@ -1,4 +1,4 @@
-print("ui starting...")
+print("UI starting...")
 
 from tkinter import *
 import os
@@ -47,38 +47,35 @@ def load_set():
     print("load pressed")
 
 def view_not_started():
-    print("-- [NOT STARTED] --")
+    print("-- Not Started --")
     if not not_started_cards:
         print(" Not cards in 'not started'")
         return
 
     for name, description in not_started_cards.items():
-        print(f"[{name}]\n  {description}")
-
-    print("-----------------------")
+        print(f"[{name}]: {description}")
 
 
 def view_in_progress():
-    print("-- [IN PROGRESS] --")
+    print("-- In Progress --")
     if not in_progress_cards:
         print(" Not cards in 'in progress'")
         return
 
     for name, description in in_progress_cards.items():
-        print(f"[{name}]\n  {description}")
+        print(f"[{name}]: {description}")
 
-    print("-----------------------")
 
 def view_completed():
-    print("-- [COMPLETED] --")
+    print("-- Completed --")
     if not completed_cards:
         print(" Not cards in 'completed'")
         return
 
     for name, description in completed_cards.items():
-        print(f"[{name}]\n  {description}")
+        print(f"[{name}]: {description}")
 
-    print("-----------------------")
+
     
 def view_all():
     view_not_started()
@@ -113,7 +110,47 @@ def add_card():
 
 
 def edit_card():
-    print("edit card")
+    context = zmq.Context()
+    socket = context.socket(zmq.REQ)
+    socket.connect("tcp://localhost:5556")  # port for edit_card.py
+
+    # Send current data to microservice
+    socket.send_json({
+        "action": "edit_card",
+        "not_started": not_started_cards,
+        "in_progress": in_progress_cards,
+        "completed": completed_cards
+    })
+
+    response = socket.recv_json()
+
+    if "error" in response:
+        print("Error:", response["error"])
+        return
+
+    old_column = response["old_column"]
+    old_name = response["old_name"]
+    new_name = response["new_name"]
+    new_description = response["new_description"]
+
+    # remove old entry
+    if old_column == "not started":
+        value = not_started_cards.pop(old_name, None)
+        if value is not None:
+            not_started_cards[new_name] = new_description
+    elif old_column == "in progress":
+        value = in_progress_cards.pop(old_name, None)
+        if value is not None:
+            in_progress_cards[new_name] = new_description
+    elif old_column == "completed":
+        value = completed_cards.pop(old_name, None)
+        if value is not None:
+            completed_cards[new_name] = new_description
+    else:
+        print("Invalid column from response")
+
+    print(f"Card '{old_name}' updated to '{new_name}' in [{old_column}]")
+
 
 def move_card():
     print("move card")
