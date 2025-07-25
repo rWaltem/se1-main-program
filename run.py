@@ -1,7 +1,5 @@
 import subprocess
-import time
 import sys
-import os
 
 # List of microservices to launch in the background
 microservices = [
