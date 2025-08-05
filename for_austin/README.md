@@ -47,3 +47,8 @@ Example Resposne 2 (Python)
   "hex": "#00ff0099"
 }
 ```
+
+
+### UML Diagram
+
+![the diagram](image-8dec754b-3b2b-4dea-b673-8f7117cbfb79.png)
