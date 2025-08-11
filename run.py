@@ -5,7 +5,6 @@ import sys
 microservices = [
     "add_card.py",
     "edit_card.py",
-    "move_card.py",
     "delete_card.py",
     "microservice_a.py"
 ]

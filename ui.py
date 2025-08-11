@@ -110,7 +110,7 @@ def load_set():
 def view_not_started():
     print("-- Not Started --")
     if not not_started_cards:
-        print(" Not cards in 'not started'")
+        print(" No cards in 'not started'")
         return
 
     for name, description in not_started_cards.items():
@@ -120,7 +120,7 @@ def view_not_started():
 def view_in_progress():
     print("-- In Progress --")
     if not in_progress_cards:
-        print(" Not cards in 'in progress'")
+        print(" No cards in 'in progress'")
         return
 
     for name, description in in_progress_cards.items():
@@ -130,7 +130,7 @@ def view_in_progress():
 def view_completed():
     print("-- Completed --")
     if not completed_cards:
-        print(" Not cards in 'completed'")
+        print(" No cards in 'completed'")
         return
 
     for name, description in completed_cards.items():
@@ -171,11 +171,11 @@ def add_card():
 
 
 def edit_card():
+    global not_started_cards, in_progress_cards, completed_cards
     context = zmq.Context()
     socket = context.socket(zmq.REQ)
-    socket.connect("tcp://localhost:5556")  # port for edit_card.py
+    socket.connect("tcp://localhost:5556")
 
-    # Send current data to microservice
     socket.send_json({
         "action": "edit_card",
         "not_started": not_started_cards,
@@ -184,40 +184,52 @@ def edit_card():
     })
 
     response = socket.recv_json()
-
     if "error" in response:
         print("Error:", response["error"])
         return
 
-    old_column = response["old_column"]
-    old_name = response["old_name"]
-    new_name = response["new_name"]
-    new_description = response["new_description"]
+    not_started_cards = response["not_started"]
+    in_progress_cards = response["in_progress"]
+    completed_cards = response["completed"]
 
-    # remove old entry
-    if old_column == "not started":
-        value = not_started_cards.pop(old_name, None)
-        if value is not None:
-            not_started_cards[new_name] = new_description
-    elif old_column == "in progress":
-        value = in_progress_cards.pop(old_name, None)
-        if value is not None:
-            in_progress_cards[new_name] = new_description
-    elif old_column == "completed":
-        value = completed_cards.pop(old_name, None)
-        if value is not None:
-            completed_cards[new_name] = new_description
-    else:
-        print("Invalid column from response")
-
-    print(f"Card '{old_name}' updated to '{new_name}' in [{old_column}]")
+    print("Card edited successfully.")
 
 
 def move_card():
-    print("move card")
+    global not_started_cards, in_progress_cards, completed_cards
+    context = zmq.Context()
+    socket = context.socket(zmq.REQ)
+    socket.connect("tcp://localhost:5556")
+
+    socket.send_json({
+        "action": "move_card",
+        "not_started": not_started_cards,
+        "in_progress": in_progress_cards,
+        "completed": completed_cards
+    })
+
+    response = socket.recv_json()
+    if "error" in response:
+        print("Error:", response["error"])
+        return
+
+    not_started_cards = response["not_started"]
+    in_progress_cards = response["in_progress"]
+    completed_cards = response["completed"]
+
+    print("Card moved successfully.")
 
 def delete_card():
-    print("delete card")
+    context = zmq.Context()
+    socket = context.socket(zmq.REQ)
+    socket.connect("tcp://localhost:5557")
+
+    socket.send_json({
+        "action": "delete_card",
+        "not_started": not_started_cards,
+        "in_progress": in_progress_cards,
+        "completed": completed_cards
+    })
 
 def help_menu():
     print("help menu")
