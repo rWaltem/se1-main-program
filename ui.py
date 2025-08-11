@@ -1,9 +1,9 @@
 print("UI starting...")
 
 from tkinter import *
-import os
 import zmq
 import json
+import os
 
 
 # global vars
@@ -41,10 +41,71 @@ def change_name():
     print("change name")
 
 def save_set():
-    print("save set")
+
+    board_name = input("Please name your board: ")
+    user_name = input("What is your name: ")
+
+    if board_name == "":
+        print("Error: No name given")
+        return
+        
+
+    context = zmq.Context()
+    socket = context.socket(zmq.REQ)
+    socket.connect("tcp://localhost:5655")  # port of microservice_a
+
+    file_data = {
+        "action": "save",
+        "board_id": board_name,
+        "user_id": user_name,
+        "data":
+        {
+            "not-started": not_started_cards,
+            "in-progress": in_progress_cards,
+            "completed": completed_cards
+        }
+    }
+
+    # send card sets
+    socket.send_json(file_data)
+
+    response = socket.recv_json()
+    print(response)
+
 
 def load_set():
-    print("load pressed")
+    global not_started_cards, in_progress_cards, completed_cards
+
+    board_path = input("What is the board name? ")
+
+    if board_path == "":
+        print("Error: No name given")
+        return
+    
+    # checks if the file path leads to a file
+    if os.path.isfile(board_path) == False:
+        print("Error: file does not exist")
+        return
+
+    context = zmq.Context()
+    socket = context.socket(zmq.REQ)
+    socket.connect("tcp://localhost:5655")  # port of microservice_a
+
+    request = {
+        "action": "load",
+        "file_name": board_path
+    }
+
+    socket.send_json(request)
+
+    response = socket.recv_json()
+    data = response["data"]
+
+    not_started_cards = data["not-started"]
+    in_progress_cards = data["in-progress"]
+    completed_cards = data["completed"]
+
+    print("Loaded card set")
 
 def view_not_started():
     print("-- Not Started --")

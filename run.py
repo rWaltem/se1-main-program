@@ -6,9 +6,8 @@ microservices = [
     "add_card.py",
     "edit_card.py",
     "move_card.py",
-    "load_set.py",
     "delete_card.py",
-    "save_set.py"
+    "microservice_a.py"
 ]
 
 # Store subprocesses
